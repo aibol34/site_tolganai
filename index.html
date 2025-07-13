@@ -3785,29 +3785,46 @@
                   src="https://dl.dropbox.com/scl/fi/yierehinc7oyp2m82vrke/.m4a?rlkey=htfn2jwf0vyy45kkdw2plufhv&st=uhx3z5wb&dl=0"
                 />
               </audio>
-              <script>
-                $(document).ready(function () {
-                  myAudio = document.getElementById("bg-sound");
-                  let fadeTime = 1; //Врямя смены иконок
-                  myAudio.volume = 0.4; //Задаём громкость
-                  $(".stopbgmusic").hide();
-                  $(".playbgmusic").click(function (e) {
-                    myAudio.play();
-                    $(this).fadeOut(fadeTime);
-                    $(".stopbgmusic").fadeIn(fadeTime);
-                  });
-                  $(".stopbgmusic").click(function (e) {
-                    e.preventDefault();
-                    myAudio.pause();
-                    $(this).fadeOut(fadeTime);
-                    $(".playbgmusic").fadeIn(fadeTime);
-                  });
-                  $("#bg-sound").on("ended", function () {
-                    $(".stopbgmusic").fadeOut(fadeTime);
-                    $(".playbgmusic").fadeIn(fadeTime);
-                  });
-                });
-              </script>
+<script>
+  $(document).ready(function () {
+    let myAudio = document.getElementById("bg-sound");
+    let fadeTime = 200; // миллисекунды смены иконок
+    myAudio.volume = 0.4;
+
+    // Пробуем автозапуск
+    myAudio.play().then(() => {
+      $(".playbgmusic").hide();
+      $(".stopbgmusic").fadeIn(fadeTime);
+    }).catch((error) => {
+      // Если автозапуск заблокирован
+      $(".stopbgmusic").hide();
+      $(".playbgmusic").show();
+      console.log("Автозапуск заблокирован:", error);
+    });
+
+    // При клике "включить"
+    $(".playbgmusic").click(function (e) {
+      myAudio.play();
+      $(this).fadeOut(fadeTime);
+      $(".stopbgmusic").fadeIn(fadeTime);
+    });
+
+    // При клике "выключить"
+    $(".stopbgmusic").click(function (e) {
+      e.preventDefault();
+      myAudio.pause();
+      $(this).fadeOut(fadeTime);
+      $(".playbgmusic").fadeIn(fadeTime);
+    });
+
+    // Когда музыка закончится
+    $("#bg-sound").on("ended", function () {
+      $(".stopbgmusic").fadeOut(fadeTime);
+      $(".playbgmusic").fadeIn(fadeTime);
+    });
+  });
+</script>
+
               <style>
                 div[class*="bgmusic"] {
                   cursor: pointer;
